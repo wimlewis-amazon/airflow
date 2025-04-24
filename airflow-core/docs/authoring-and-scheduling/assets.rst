@@ -31,7 +31,8 @@ What is an "Asset"?
 
 An Airflow asset is a logical grouping of data. Upstream producer tasks can update assets, and asset updates contribute to scheduling downstream consumer dags.
 
-`Uniform Resource Identifier (URI) <https://en.wikipedia.org/wiki/Uniform_Resource_Identifier>`_ define assets:
+An asset is defined by a name and a `Uniform Resource Identifier (URI) <https://en.wikipedia.org/wiki/Uniform_Resource_Identifier>`_.
+By default, an asset's name and URI are the same.
 
 .. code-block:: python
 
@@ -41,7 +42,8 @@ An Airflow asset is a logical grouping of data. Upstream producer tasks can upda
 
 Airflow makes no assumptions about the content or location of the data represented by the URI, and treats the URI like a string. This means that Airflow treats any regular expressions, like ``input_\d+.csv``, or file glob patterns, such as ``input_2022*.csv``, as an attempt to create multiple assets from one declaration, and they will not work.
 
-You must create assets with a valid URI. Airflow core and providers define various URI schemes that you can use, such as ``file`` (core), ``postgres`` (by the Postgres provider), and ``s3`` (by the Amazon provider). Third-party providers and plugins might also provide their own schemes. These pre-defined schemes have individual semantics that are expected to be followed. You can use the optional name argument to provide a more human-readable identifier to the asset.
+You must create assets with a valid URI. Airflow core and providers define various URI schemes that you can use, such as ``file`` (core), ``postgres`` (by the Postgres provider), and ``s3`` (by the Amazon provider). For a list of these, consult the :doc:`core extensions documentation of URI schemes <apache-airflow-providers:authoring-and-scheduling/assets>`.
+Third-party providers and plugins might also provide their own schemes. These pre-defined schemes have individual semantics that are expected to be followed. You can use the optional name argument to provide a more human-readable identifier to the asset.
 
 .. code-block:: python
 
@@ -52,7 +54,7 @@ You must create assets with a valid URI. Airflow core and providers define vario
 What is valid URI?
 ------------------
 
-Technically, the URI must conform to the valid character set in RFC 3986, which is basically ASCII alphanumeric characters, plus ``%``,  ``-``, ``_``, ``.``, and ``~``. To identify a resource that cannot be represented by URI-safe characters, encode the resource name with `percent-encoding <https://en.wikipedia.org/wiki/Percent-encoding>`_.
+Technically, the URI must conform to the valid character set in :rfc:`3986`, which is basically ASCII alphanumeric characters, plus ``%``,  ``-``, ``_``, ``.``, and ``~``. To identify a resource that cannot be represented by URI-safe characters, encode the resource name with `percent-encoding <https://en.wikipedia.org/wiki/Percent-encoding>`_.
 
 The URI is also case sensitive, so ``s3://example/asset`` and ``s3://Example/asset`` are considered different. Note that the *host* part of the URI is also case sensitive, which differs from RFC 3986.
 
@@ -63,7 +65,7 @@ For pre-defined schemes (e.g., ``file``, ``postgres``, and ``s3``), you must pro
     # invalid asset:
     must_contain_bucket_name = Asset("s3://")
 
-Do not use the ``airflow`` scheme, which is is reserved for Airflow's internals.
+Do not use the ``airflow`` scheme, which is reserved for Airflow's internals.
 
 Airflow always prefers using lower cases in schemes, and case sensitivity is needed in the host part of the URI to correctly distinguish between resources.
 
